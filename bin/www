@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('gastro-food-service:server');
 var http = require('http');
+require('../src/utils/db');
 
 /**
  * Get port from environment and store in Express.
