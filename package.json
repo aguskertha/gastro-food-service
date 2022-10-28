@@ -22,6 +22,7 @@
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
     "validator": "^13.7.0",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "express-fileupload": "^1.4.0"
   }
 }
