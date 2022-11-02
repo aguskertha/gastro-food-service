@@ -2,6 +2,7 @@ const fs = require('fs');
 const sharp = require('sharp');
 const moment = require('moment');
 const Storage = require('./storage-constant')
+const {Base64} = require('js-base64');
 
 const upload = async (req, res, next) => {
     try {
@@ -30,7 +31,23 @@ const upload = async (req, res, next) => {
     }
 }
 
+const encodeBase64 = async (req, res, next) => {
+    try {
+        if(req.files.picture){
+            const buffer = req.files.picture.data
+            return Base64.encode(buffer)
+        }
+        else
+        {
+            throw "Picture not found!"
+        }
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
+}
+
 
 module.exports = {
-    upload
+    upload,
+    encodeBase64
 }

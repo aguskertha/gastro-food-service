@@ -2,14 +2,19 @@ const Food = require('./../models/food.model')
 const Utilities = require('./../utils/utilities')
 const Storage = require('./../utils/storage-constant')
 const ObjectId = require('mongodb').ObjectId;
+// var Jimp = require('jimp');
+const axiosLib = require('axios')
+const axios = axiosLib.create({baseURL: "http://127.0.0.1:8000/api"});
+const {Base64} = require('js-base64');
 
 const createFood = async (req, res, next) => {
     try {
         const foods = await Food.find().sort({createdAt : -1});
         const foodCode = Storage.FOOD+'-'+(foods.length+1)
         const {name, description} = req.body
+        const base64 = await Utilities.encodeBase64(req,res,next)
         const picture = await Utilities.upload(req,res,next);
-        const newFood = new Food({foodCode, name, picture, description})
+        const newFood = new Food({foodCode, name, picture, description,base64})
         await newFood.save()
 
         res.json(newFood)
@@ -82,7 +87,67 @@ const getByCode = async (req, res, next) => {
     }
 }
 
+const convImage = async (req, res, next) => {
+    try {
+        // Jimp.read('https://img.jakpost.net/c/2019/03/02/2019_03_02_66706_1551461528._large.jpg')
+        //     .then(lenna => {
+        //         return lenna
+        //         .resize(256, 256) // resize
+        //         .quality(60) // set JPEG quality
+        //         .greyscale() // set greyscale
+        //         .write('lena-small-bw.jpg'); // save
+        //     })
+        //     .catch(err => {
+        //         console.error(err);
+        //     });
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
+}
 
+const createQueryBase64 = async (req, res, next) => {
+    try {
+        const {base64} = req.body
+        let images = []
+        let labels = []
+
+        const foods = await Food.find()
+
+        foods.forEach(food => {
+            images.push(food.base64)
+            labels.push(food._id)
+            console.log(food._id)
+        });
+
+        result = await axios.post('/multi-predict', {
+            method: 'POST',
+            query: base64,
+            images
+        });
+
+        const predicts = result.data
+
+        let datas = []
+        for (let index = 0; index < foods.length; index++) {
+            const data = {
+                predict: predicts[index][0],
+                label : labels[index]
+            }
+            datas.push(data)
+        }
+
+        datas.sort((a,b) => {
+            return b.predict - a.predict
+        })
+
+        const data = datas[0]
+        const food = await Food.findOne({_id: ObjectId(data.label)})
+        
+        res.json(food)
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
+}
 
 
 module.exports = {
@@ -92,5 +157,7 @@ module.exports = {
     deleteByCode,
     deleteById,
     getById,
-    getByCode
+    getByCode,
+    convImage,
+    createQueryBase64
 }
