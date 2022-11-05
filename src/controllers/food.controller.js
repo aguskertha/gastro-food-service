@@ -4,7 +4,7 @@ const Storage = require('./../utils/storage-constant')
 const ObjectId = require('mongodb').ObjectId;
 // var Jimp = require('jimp');
 const axiosLib = require('axios')
-const axios = axiosLib.create({baseURL: "http://127.0.0.1:8000/api"});
+const axios = axiosLib.create({baseURL: process.env.DJANGO_SERVER+"/api"});
 const {Base64} = require('js-base64');
 
 const createFood = async (req, res, next) => {
