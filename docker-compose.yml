@@ -17,7 +17,7 @@ services:
       - db_port=385
       - db_name=foodDB
       - PORT=5004
-      - DJANGO_SERVER=http://159.223.86.91:8000
+      - DJANGO_SERVER=http://159.223.36.118:8000
   gastro-mongo:
     image: mongo:latest # use the latest image.
     container_name: gastro-mongo
