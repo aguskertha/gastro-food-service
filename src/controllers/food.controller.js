@@ -116,7 +116,6 @@ const createQueryBase64 = async (req, res, next) => {
         foods.forEach(food => {
             images.push(food.base64)
             labels.push(food._id)
-            console.log(food._id)
         });
 
         result = await axios.post('/multi-predict', {
@@ -133,6 +132,7 @@ const createQueryBase64 = async (req, res, next) => {
                 predict: predicts[index][0],
                 label : labels[index]
             }
+            console.log(data.label+" <> "+data.predict)
             datas.push(data)
         }
 
@@ -141,8 +141,12 @@ const createQueryBase64 = async (req, res, next) => {
         })
 
         const data = datas[0]
-        const food = await Food.findOne({_id: ObjectId(data.label)})
-        
+        if(data.predict < 0.7)
+        {
+            throw "Predict not found!"
+        }
+        let food = await Food.findOne({_id: ObjectId(data.label)})
+        food.base64 = data.predict.toString()
         res.json(food)
     } catch (error) {
         res.status(400).json({message: error.toString()})
