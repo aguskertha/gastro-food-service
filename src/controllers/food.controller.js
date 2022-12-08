@@ -13,7 +13,7 @@ const createFood = async (req, res, next) => {
         const foodCode = Storage.FOOD+'-'+(foods.length+1)
         const {name, description} = req.body
         const base64 = await Utilities.encodeBase64(req,res,next)
-        const picture = await Utilities.upload(req,res,next);
+        const picture = await Utilities.uploadMultiple(req,res,next);
         const newFood = new Food({foodCode, name, picture, description,base64})
         await newFood.save()
 
@@ -108,28 +108,36 @@ const convImage = async (req, res, next) => {
 const createQueryBase64 = async (req, res, next) => {
     try {
         const {base64} = req.body
-        let images = []
         let labels = []
-
+        let predicts = []
         const foods = await Food.find()
-
-        foods.forEach(food => {
-            images.push(food.base64)
+        
+        await Promise.all(foods.map(async (food) => {
+            let images = []
             labels.push(food._id)
-        });
+            food.base64.forEach(base64 => {
+                images.push(base64)
+            });
+            result = await axios.post('/multi-predict', {
+                method: 'POST',
+                query: base64,
+                images
+            });
+            
+            const preds = result.data
+            sum = 0
+            preds.forEach(predict => {
+                sum += predict[0]
+            });
+            predicts.push(sum / food.base64.length)
+        }));
 
-        result = await axios.post('/multi-predict', {
-            method: 'POST',
-            query: base64,
-            images
-        });
-
-        const predicts = result.data
+        
 
         let datas = []
         for (let index = 0; index < foods.length; index++) {
             const data = {
-                predict: predicts[index][0],
+                predict: predicts[index],
                 label : labels[index]
             }
             console.log(data.label+" <> "+data.predict)
@@ -147,6 +155,7 @@ const createQueryBase64 = async (req, res, next) => {
         }
         let food = await Food.findOne({_id: ObjectId(data.label)})
         food.base64 = data.predict.toString()
+        console.log(datas)
         res.json(food)
     } catch (error) {
         res.status(400).json({message: error.toString()})
