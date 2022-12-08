@@ -108,34 +108,25 @@ const convImage = async (req, res, next) => {
 const createQueryBase64 = async (req, res, next) => {
     try {
         const {base64} = req.body
+        let images = []
         let labels = []
-        let predicts = []
         const foods = await Food.find()
-        
         await Promise.all(foods.map(async (food) => {
-            let images = []
-            labels.push(food._id)
             food.base64.forEach(base64 => {
                 images.push(base64)
+                labels.push(food._id)
             });
-            result = await axios.post('/multi-predict', {
-                method: 'POST',
-                query: base64,
-                images
-            });
-            
-            const preds = result.data
-            sum = 0
-            preds.forEach(predict => {
-                sum += predict[0]
-            });
-            predicts.push(sum / food.base64.length)
         }));
+        result = await axios.post('/multi-predict', {
+            method: 'POST',
+            query: base64,
+            images
+        });
 
-        
+        let predicts = result.data
 
         let datas = []
-        for (let index = 0; index < foods.length; index++) {
+        for (let index = 0; index < images.length; index++) {
             const data = {
                 predict: predicts[index],
                 label : labels[index]
