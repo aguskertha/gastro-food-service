@@ -131,7 +131,7 @@ const createQueryBase64 = async (req, res, next) => {
                 predict: predicts[index],
                 label : labels[index]
             }
-            console.log(data.label+" <> "+data.predict)
+            // console.log(data.label+" <> "+data.predict)
             datas.push(data)
         }
 
