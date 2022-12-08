@@ -146,8 +146,15 @@ const createQueryBase64 = async (req, res, next) => {
         }
         let food = await Food.findOne({_id: ObjectId(data.label)})
         food.base64 = data.predict.toString()
-        console.log(datas)
-        res.json(food)
+        let newfood = {
+            picture: food.picture[0],
+            base64: data.predict.toString(),
+            _id: food._id,
+            name: food.name,
+            description: food.description,
+            foodCode: food.foodCode
+        }
+        res.json(newfood)
     } catch (error) {
         res.status(400).json({message: error.toString()})
     }
