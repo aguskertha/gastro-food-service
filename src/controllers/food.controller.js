@@ -114,7 +114,7 @@ const createQueryBase64 = async (req, res, next) => {
         await Promise.all(foods.map(async (food) => {
             food.base64.forEach(base64 => {
                 images.push(base64)
-                labels.push(food._id)
+                labels.push(food.foodCode)
             });
         }));
         result = await axios.post('/multi-predict', {
@@ -124,27 +124,32 @@ const createQueryBase64 = async (req, res, next) => {
         });
 
         let predicts = result.data
+        let datas = getNewObject(predicts, labels, images.length)
 
-        let datas = []
-        for (let index = 0; index < images.length; index++) {
+        const groupedDatas = datas.reduce(groupAndCollectByCode, {});
+
+        let newObjs = []
+        for (let index = 1; index <= foods.length; index++) {
+            const key = Storage.FOOD+"-"+index
+            const predictAvg = getAverage(groupedDatas[key])
             const data = {
-                predict: predicts[index],
-                label : labels[index]
+                predict: predictAvg,
+                label : key
             }
-            // console.log(data.label+" <> "+data.predict)
-            datas.push(data)
+            newObjs.push(data)
         }
-
-        datas.sort((a,b) => {
+        
+        newObjs.sort((a,b) => {
             return b.predict - a.predict
         })
-
-        const data = datas[0]
-        if(data.predict < 0.7)
+        
+        console.log(newObjs)
+        const data = newObjs[0]
+        if(data.predict < 0.70)
         {
-            throw "Predict not found!"
+            throw "Food not found!"
         }
-        let food = await Food.findOne({_id: ObjectId(data.label)})
+        let food = await Food.findOne({foodCode: data.label})
         food.base64 = data.predict.toString()
         let newfood = {
             picture: food.picture[0],
@@ -158,6 +163,37 @@ const createQueryBase64 = async (req, res, next) => {
     } catch (error) {
         res.status(400).json({message: error.toString()})
     }
+}
+
+const getNewObject = (predicts, labels, len) => {
+    let datas = []
+    for (let index = 0; index < len; index++) {
+        const data = {
+            predict: predicts[index],
+            label : labels[index]
+        }
+        datas.push(data)
+    }
+    return datas
+}
+
+const getAverage = (datas) => {
+    let sum = 0
+    let i = 0
+    datas.forEach(data => {
+        sum+=data.predict[0]
+        i++
+    });
+    return sum / i
+}
+
+const groupAndCollectByCode = (index, item) =>{
+    const { label } = item;
+    const groupKey = [label].join('_');
+  
+    (index[groupKey] ??= []).push(item);
+  
+    return index;
 }
 
 
