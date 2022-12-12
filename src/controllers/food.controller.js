@@ -126,25 +126,25 @@ const createQueryBase64 = async (req, res, next) => {
         let predicts = result.data
         let datas = getNewObject(predicts, labels, images.length)
 
-        const groupedDatas = datas.reduce(groupAndCollectByCode, {});
+        // const groupedDatas = datas.reduce(groupAndCollectByCode, {});
 
-        let newObjs = []
-        for (let index = 1; index <= foods.length; index++) {
-            const key = Storage.FOOD+"-"+index
-            const predictAvg = getAverage(groupedDatas[key])
-            const data = {
-                predict: predictAvg,
-                label : key
-            }
-            newObjs.push(data)
-        }
+        // let newObjs = []
+        // for (let index = 1; index <= foods.length; index++) {
+        //     const key = Storage.FOOD+"-"+index
+        //     const predictAvg = getAverage(groupedDatas[key])
+        //     const data = {
+        //         predict: predictAvg,
+        //         label : key
+        //     }
+        //     newObjs.push(data)
+        // }
         
-        newObjs.sort((a,b) => {
+        datas.sort((a,b) => {
             return b.predict - a.predict
         })
         
-        console.log(newObjs)
-        const data = newObjs[0]
+        console.log(datas)
+        const data = datas[0]
         if(data.predict < 0.70)
         {
             throw "Food not found!"
