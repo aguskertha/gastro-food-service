@@ -18,6 +18,10 @@ const foodSchema = new Schema({
             required: true
         }
     ],
+    link: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: true
@@ -26,6 +30,40 @@ const foodSchema = new Schema({
         {
             type: String,
             required: true
+        }
+    ],
+    history: {
+        type: String,
+        required: true
+    },
+    culture: {
+        type: String,
+        required: true
+    },
+    lifeStyle: {
+        type: String,
+        required: true
+    },
+    ingredients: [
+        {
+            name : {
+                type: String,
+            },
+            items : [
+                {
+                    type: String,
+                }
+            ]
+        }
+    ],
+    howToMakes: [
+        {
+            type: String,    
+        }
+    ],
+    nutritions: [
+        {
+            type: String,    
         }
     ],
     createdAt: {

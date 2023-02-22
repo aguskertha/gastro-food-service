@@ -38,7 +38,7 @@ const uploadMultiple = async (req, res, next) => {
                     fs.mkdirSync("./public/picture/");
                 }
             });
-            images = req.files.picture
+            images = req.files.files
             datas = []
             await Promise.all(images.map(async (image) => {
                 const buffer = image.data
@@ -64,9 +64,9 @@ const uploadMultiple = async (req, res, next) => {
 
 const encodeBase64 = async (req, res, next) => {
     try {
-        if(req.files.picture){
+        if(req.files.files){
             datas = []
-            images = req.files.picture
+            images = req.files.files
             await Promise.all(images.map(async (image) => {
                 const buffer = image.data
                 datas.push(Base64.encode(buffer))

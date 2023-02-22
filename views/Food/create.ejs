@@ -1,0 +1,338 @@
+
+<div class="row mt-5">
+    <div class="col-md-6 m-auto">
+        <div class="card card-body">
+        <h1 class="text-center mb-3">
+            Create Food
+        </h1>
+        <% include ./../partials/messages %> 
+        <form action="/admin/foods/create" method="POST" enctype="multipart/form-data">
+            
+            <div class="form-group mt-2">
+            <label for="name">Name</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control mt-1"
+                placeholder="Enter Name"
+                value="<%= typeof name != 'undefined' ? name : '' %>"
+            />
+            </div>
+            
+            <div class="form-group mt-2">
+            <label for="name">Link Video</label>
+            <input
+                type="text"
+                id="link"
+                name="link"
+                class="form-control mt-1"
+                placeholder="Enter Url"
+                value="<%= typeof link != 'undefined' ? link : '' %>"
+            />
+            </div>
+
+            <div class="form-group mt-2">
+            <label for="name">Description</label>
+            <textarea
+                type="text"
+                id="description"
+                name="description"
+                class="form-control mt-1"
+                placeholder="Enter Description"
+                value="<%= typeof description != 'undefined' ? description : '' %>"
+            ></textarea>
+            </div>
+
+            <div class="form-group mt-2">
+            <label for="name">History</label>
+            <textarea
+                type="text"
+                id="history"
+                name="history"
+                class="form-control mt-1"
+                placeholder="Enter History"
+                value="<%= typeof history != 'undefined' ? history : '' %>"
+            ></textarea>
+            </div>
+            
+            <div class="form-group mt-2">
+            <label for="name">Culture</label>
+            <textarea
+                id="culture"
+                name="culture"
+                class="form-control mt-1"
+                placeholder="Enter Culture"
+                value="<%= typeof culture != 'undefined' ? culture : '' %>"
+            ></textarea>
+            </div>
+
+            <div class="form-group mt-2">
+            <label for="name">Food Party Of Life Style</label>
+            <input
+                type="text"
+                id="lifeStyle"
+                name="lifeStyle"
+                class="form-control mt-1"
+                placeholder="Enter Life Style"
+                value="<%= typeof lifeStyle != 'undefined' ? lifeStyle : '' %>"
+            />
+            </div>
+
+            <div class="form-group mt-2">
+            <label for="name">Ingredients</label>
+            <input type="hidden" id="ingredientTypeNumber" name="ingredientTypeNumber" value="1">
+            <div class="ingredientTypeWapper">
+                <div class="row" id="rowIngredient1">
+                    <div class="col-md-10">
+                        <input
+                            type="text"
+                            id="ingredient1"
+                            name="ingredient1"
+                            class="form-control mt-1"
+                            placeholder="Enter Ingredient"
+                            value="<%= typeof ingredient != 'undefined' ? ingredient : '' %>"
+                        />
+                        <input type="hidden" id="itemNumber1" name="itemNumber1" value="1">
+                        <div class="itemWrapper1">
+                            <div class="row" id="rowItem11">
+                                <div class="col-md-10">
+                                    <input
+                                        type="text"
+                                        id="item11"
+                                        name="item11"
+                                        class="form-control mt-1 ms-3"
+                                        placeholder="Enter Item"
+                                        value="<%= typeof item != 'undefined' ? item : '' %>"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-10">
+                                <hr>
+                            </div>
+                            <div class="col mt-1" align="center">
+                                <button type="button" class="btn btn-primary btn-md" id="itemButton1"><i class="bi bi-node-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <hr>
+                </div>
+                <div class="col mt-1" align="center">
+                    <button type="button" class="btn btn-primary btn-md" id="ingredientTypeButton"><i class="bi bi-node-plus"></i></button>
+                </div>
+            </div>
+            </div>
+
+            <div class="form-group mt-2">
+            <label for="name">How To Makes</label>
+            <input type="hidden" id="howToMakeNumber" name="howToMakeNumber" value="1">
+            <div class="howToMakeWrapper">
+                <div class="row" id="rowHowToMake1">
+                    <div class="col-md-10">
+                        <input
+                            type="text"
+                            id="howToMake1"
+                            name="howToMake1"
+                            class="form-control mt-1"
+                            placeholder="Enter Step"
+                            value="<%= typeof howToMake != 'undefined' ? howToMake : '' %>"
+                        />
+    
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <hr>
+                </div>
+                <div class="col mt-1" align="center">
+                    <button type="button" class="btn btn-primary btn-md" id="howToMakeButton"><i class="bi bi-node-plus"></i></button>
+                </div>
+            </div>
+            </div>
+
+            <div class="form-group mt-2">
+            <label for="name">Nutritions</label>
+            <input type="hidden" id="nutritionNumber" name="nutritionNumber" value="1">
+            <div class="nutritionWrapper">
+                <div class="row" id="rowNutrition1">
+                    <div class="col-md-10">
+                        <input
+                            type="text"
+                            id="nutrition1"
+                            name="nutrition1"
+                            class="form-control mt-1"
+                            placeholder="Enter Nutrition"
+                            value="<%= typeof nutrition != 'undefined' ? nutrition : '' %>"
+                        />
+    
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <hr>
+                </div>
+                <div class="col mt-1" align="center">
+                    <button type="button" class="btn btn-primary btn-md" id="nutritionButton"><i class="bi bi-node-plus"></i></button>
+                </div>
+            </div>
+            </div>
+            
+            <div class="form-group mt-2">
+            <label for="name">Pictures</label>
+            <div class="row" id="">
+                <div class="col-md-10">
+                    <input class="form-control form-control-lg" id="files" name="files" type="file" multiple>
+                </div>
+            </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block mt-3">
+            Submit
+            </button>
+        </form>
+        </div>
+    </div>
+ 
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(function(){
+        $('#doctorID').on('change', function(){
+            var selectedValue = $(this).val();
+            console.log(selectedValue)
+            $('input:hidden').val(selectedValue);
+        }) 
+
+    })
+
+    function addIngredient (label, number, button, wrapper){
+        var ingredientTypeNumber = $(number).val();
+        $(button).on('click', () => {
+            var ingredientTypeWapper = $(wrapper);
+            $(number).val(++ingredientTypeNumber);
+            $(ingredientTypeWapper).append(`
+            <div class="row" id="rowIngredient${ingredientTypeNumber}">
+                <div class="col-md-10">
+                    <input
+                        type="text"
+                        id="ingredient${ingredientTypeNumber}"
+                        name="ingredient${ingredientTypeNumber}"
+                        class="form-control mt-1"
+                        placeholder="Enter Ingredient"
+                        value=""
+                    />
+                    <input type="hidden" id="itemNumber${ingredientTypeNumber}" name="itemNumber${ingredientTypeNumber}" value="1">
+                    <div class="itemWrapper${ingredientTypeNumber}">
+                        <div class="row" id="rowItem${ingredientTypeNumber}1">
+                            <div class="col-md-10">
+                                <input
+                                    type="text"
+                                    id="item${ingredientTypeNumber}1"
+                                    name="item${ingredientTypeNumber}1"
+                                    class="form-control mt-1 ms-3"
+                                    placeholder="Enter Item"
+                                    value="<%= typeof lifeStyle != 'undefined' ? lifeStyle : '' %>"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-10">
+                            <hr>
+                        </div>
+                        <div class="col mt-1" align="center">
+                            <button type="button" class="btn btn-primary btn-md" id="itemButton${ingredientTypeNumber}"><i class="bi bi-node-plus"></i></button>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col mt-1" align="center">
+                    <button type="button" class="btn btn-danger btn-md" id="ingredientTypeButton${ingredientTypeNumber}"><i class="bi bi-node-minus"></i></button>
+                </div>
+            </div>
+            `);  
+
+            // addIngredient('Ingredient', '#ingredientTypeNumber', `#ingredientTypeButton${ingredientTypeNumber}`, ".ingredientTypeWapper");
+            removeField(`#rowIngredient${ingredientTypeNumber}`, `#ingredientTypeButton${ingredientTypeNumber}`);
+            addItem('Item', number, `#itemNumber${ingredientTypeNumber}`, `#itemButton${ingredientTypeNumber}`, `.itemWrapper${ingredientTypeNumber}`);
+        })
+    }
+    function addItem (label, number, numberItem, button, wrapper){
+        var ingredientTypeNumber = $(number).val();
+        var itemNumber = $(numberItem).val();
+        $(button).on('click', () => {
+            var ingredientTypeWapper = $(wrapper);
+            $(numberItem).val(++itemNumber);
+            $(ingredientTypeWapper).append(`
+            <div class="row" id="rowItem${ingredientTypeNumber}${itemNumber}">
+                <div class="col-md-10">
+                    <input
+                        type="text"
+                        id="item${ingredientTypeNumber}${itemNumber}"
+                        name="item${ingredientTypeNumber}${itemNumber}"
+                        class="form-control mt-1 ms-3"
+                        placeholder="Enter Item"
+                    />
+                </div>
+                <div class="col mt-1" align="center">
+                    <button type="button" class="btn btn-danger btn-md" id="itemButton${ingredientTypeNumber}${itemNumber}"><i class="bi bi-node-minus"></i></button>
+                </div>
+            </div>
+            `);  
+
+            // addIngredient('Ingredient', '#ingredientTypeNumber', `#ingredientTypeButton${ingredientTypeNumber}`, ".ingredientTypeWapper");
+            removeField( `#rowItem${ingredientTypeNumber}${itemNumber}`, `#itemButton${ingredientTypeNumber}${itemNumber}`);
+        })
+    }
+
+    function addField (label, name, number, button, wrapper, row){
+        var _number = $("#"+number).val();
+        $("#"+button).on('click', () => {
+            var _wrapper = $("."+wrapper);
+            $("#"+number).val(++_number);
+            $(_wrapper).append(`
+            <div class="row" id="${row}${_number}">
+                <div class="col-md-10">
+                    <input
+                        type="text"
+                        id="${name}${_number}"
+                        name="${name}${_number}"
+                        class="form-control mt-1"
+                        placeholder="Enter ${label}"
+                        value=""
+                    />
+                    
+                </div>
+                <div class="col mt-1" align="center">
+                    <button type="button" class="btn btn-danger btn-md" id="${button}${_number}"><i class="bi bi-node-minus"></i></button>
+                </div>
+            </div>
+            `);  
+
+            removeField(`#${row}${_number}`, `#${button}${_number}`);
+        })
+    }
+
+    function removeField ( row, button){
+        $(button).on('click', () => {
+            var oldBtn = $(row);
+            oldBtn.remove()
+        })
+    }
+
+    addField('Step', 'howToMake', 'howToMakeNumber', 'howToMakeButton', "howToMakeWrapper", "rowHowToMake");
+    addField('Nutrition', 'nutrition', 'nutritionNumber', 'nutritionButton', "nutritionWrapper", "rowNutrition");
+    addIngredient('Ingredient', '#ingredientTypeNumber', '#ingredientTypeButton', ".ingredientTypeWapper");
+    addItem('Item', '#ingredientTypeNumber', '#itemNumber1', '#itemButton1', ".itemWrapper1");
+    
+</script>

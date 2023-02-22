@@ -1,0 +1,34 @@
+<div class="container-fluid bg-white shadow-sm bg-body rounded py-3 m-3">
+    <a class="btn btn-primary mb-3" href="/admin/foods/create" role="button"><i class="bi bi-plus-square"></i> Food</a>
+    <table class="table caption-top table-paginate-patient flex" cellspacing="0" width="100%">
+        <caption class="h3 mt-2">Food List</caption>
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for( let index = 0; index < foods.length; index++ ) { %>
+                <% const food = foods[index] %> 
+                <tr>
+                    <th scope="row"><%= index+1 %> </th>
+                    <td><%= food.name %></td>
+                    <td><%= food.description %></td>
+                    <td>@mdo</td>
+                </tr>
+            <% } %>
+          
+        </tbody>
+      </table>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.table-paginate-patient').DataTable();
+    });
+</script>

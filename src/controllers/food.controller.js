@@ -11,10 +11,13 @@ const createFood = async (req, res, next) => {
     try {
         const foods = await Food.find().sort({createdAt : -1});
         const foodCode = Storage.FOOD+'-'+(foods.length+1)
-        const {name, description} = req.body
+        let food = JSON.parse(req.body.food)
+        food.foodCode = foodCode
         const base64 = await Utilities.encodeBase64(req,res,next)
         const picture = await Utilities.uploadMultiple(req,res,next);
-        const newFood = new Food({foodCode, name, picture, description,base64})
+        food.picture = picture
+        food.base64 = base64
+        const newFood = new Food(food)
         await newFood.save()
 
         res.json(newFood)
@@ -143,7 +146,6 @@ const createQueryBase64 = async (req, res, next) => {
             return b.predict - a.predict
         })
         
-        console.log(datas)
         const data = datas[0]
         if(data.predict < 0.70)
         {
@@ -195,7 +197,6 @@ const groupAndCollectByCode = (index, item) =>{
   
     return index;
 }
-
 
 module.exports = {
     createFood,
