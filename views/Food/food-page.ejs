@@ -1,12 +1,12 @@
 <div class="container-fluid bg-white shadow-sm bg-body rounded py-3 m-3">
     <a class="btn btn-primary mb-3" href="/admin/foods/create" role="button"><i class="bi bi-plus-square"></i> Food</a>
-    <table class="table caption-top table-paginate-patient flex" cellspacing="0" width="100%">
+    <table class="table caption-top table-paginate-food flex" cellspacing="0" width="70%">
         <caption class="h3 mt-2">Food List</caption>
         <thead>
             <tr>
                 <th scope="col">No</th>
+                <th scope="col">Code</th>
                 <th scope="col">Name</th>
-                <th scope="col">Description</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -15,9 +15,12 @@
                 <% const food = foods[index] %> 
                 <tr>
                     <th scope="row"><%= index+1 %> </th>
+                    <td><%= food.foodCode %></td>
                     <td><%= food.name %></td>
-                    <td><%= food.description %></td>
-                    <td>@mdo</td>
+                    <td>
+                        <a class="btn btn-warning" href="/admin/foods/<%= food._id %>/edit" role="button"><i class="bi bi-pencil"></i></a>
+                        <button class="btn btn-danger" onclick="deleteFood('<%= food._id %>')"><i class="bi bi-trash"></i></button>
+                    </td>
                 </tr>
             <% } %>
           
@@ -29,6 +32,27 @@
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('.table-paginate-patient').DataTable();
+        $('.table-paginate-food').DataTable();
     });
+
+    async function deleteData(url = '') {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      return response.json(); 
+    }
+
+    function deleteFood(foodId){
+      var result = confirm('Are you sure to delete the Item?');
+      if(result){
+        deleteData('/food/'+foodId)
+        .then(data => {
+          location.href = '/admin/foods'
+        })
+      }
+    }
+
 </script>

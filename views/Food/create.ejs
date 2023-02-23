@@ -6,7 +6,11 @@
             Create Food
         </h1>
         <% include ./../partials/messages %> 
-        <form action="/admin/foods/create" method="POST" enctype="multipart/form-data">
+        <% let url = "/admin/foods/create" %>
+        <% if (typeof food != 'undefined') { %>
+            <% url = `/admin/foods/${food._id}/edit` %>
+        <% } %>
+        <form action="<%= url %>" method="POST" enctype="multipart/form-data">
             
             <div class="form-group mt-2">
             <label for="name">Name</label>
@@ -16,7 +20,7 @@
                 name="name"
                 class="form-control mt-1"
                 placeholder="Enter Name"
-                value="<%= typeof name != 'undefined' ? name : '' %>"
+                value="<%= typeof food == 'undefined' ? '' : typeof food.name == 'undefined' ? '' : food.name %>"
             />
             </div>
             
@@ -28,7 +32,7 @@
                 name="link"
                 class="form-control mt-1"
                 placeholder="Enter Url"
-                value="<%= typeof link != 'undefined' ? link : '' %>"
+                value="<%= typeof food == 'undefined' ? '' : typeof food.link == 'undefined' ? '' : food.link %>"
             />
             </div>
 
@@ -40,8 +44,7 @@
                 name="description"
                 class="form-control mt-1"
                 placeholder="Enter Description"
-                value="<%= typeof description != 'undefined' ? description : '' %>"
-            ></textarea>
+            ><%= typeof food == 'undefined' ? '' : typeof food.description == 'undefined' ? '' : food.description %></textarea>
             </div>
 
             <div class="form-group mt-2">
@@ -52,8 +55,7 @@
                 name="history"
                 class="form-control mt-1"
                 placeholder="Enter History"
-                value="<%= typeof history != 'undefined' ? history : '' %>"
-            ></textarea>
+            ><%= typeof food == 'undefined' ? '' : typeof food.history == 'undefined' ? '' : food.history %></textarea>
             </div>
             
             <div class="form-group mt-2">
@@ -64,7 +66,7 @@
                 class="form-control mt-1"
                 placeholder="Enter Culture"
                 value="<%= typeof culture != 'undefined' ? culture : '' %>"
-            ></textarea>
+            ><%= typeof food == 'undefined' ? '' : typeof food.culture == 'undefined' ? '' : food.culture %></textarea>
             </div>
 
             <div class="form-group mt-2">
@@ -75,50 +77,107 @@
                 name="lifeStyle"
                 class="form-control mt-1"
                 placeholder="Enter Life Style"
-                value="<%= typeof lifeStyle != 'undefined' ? lifeStyle : '' %>"
+                value="<%= typeof food == 'undefined' ? '' : typeof food.lifeStyle == 'undefined' ? '' : food.lifeStyle %>"
             />
             </div>
 
             <div class="form-group mt-2">
             <label for="name">Ingredients</label>
-            <input type="hidden" id="ingredientTypeNumber" name="ingredientTypeNumber" value="1">
+            <input type="hidden" id="ingredientTypeNumber" name="ingredientTypeNumber" value="<%= typeof food == 'undefined' ? '1' : typeof food.ingredients == 'undefined' ? '1' : food.ingredients.length %>">
             <div class="ingredientTypeWapper">
-                <div class="row" id="rowIngredient1">
-                    <div class="col-md-10">
-                        <input
-                            type="text"
-                            id="ingredient1"
-                            name="ingredient1"
-                            class="form-control mt-1"
-                            placeholder="Enter Ingredient"
-                            value="<%= typeof ingredient != 'undefined' ? ingredient : '' %>"
-                        />
-                        <input type="hidden" id="itemNumber1" name="itemNumber1" value="1">
-                        <div class="itemWrapper1">
-                            <div class="row" id="rowItem11">
+                <% if (typeof food != 'undefined') { %>
+                    <% for( let i = 1; i <= food.ingredients.length; i++ ) { %>
+                        <% let ingredient = food.ingredients[i-1] %>
+                        <div class="row" id="rowIngredient<%= i %>">
+                            <div class="col-md-10">
+                                <input
+                                    type="text"
+                                    id="ingredient<%= i %>"
+                                    name="ingredient<%= i %>"
+                                    class="form-control mt-1"
+                                    placeholder="Enter Ingredient"
+                                    value="<%= typeof ingredient != 'undefined' ? ingredient.name : '' %>"
+                                />
+                                <input type="hidden" id="itemNumber<%= i %>" name="itemNumber<%= i %>" value="<%= typeof ingredient == 'undefined' ? '1' : typeof ingredient.items == 'undefined' ? '1' : ingredient.items.length %>">
+                                <div class="itemWrapper<%= i %>">
+                                    <% for( let j = 1; j <= ingredient.items.length; j++ ) { %>
+                                        <% let item = ingredient.items[j-1] %>
+                                        <div class="row" id="rowItem<%= i %><%= j %>">
+                                            <div class="col-md-10">
+                                                <input
+                                                    type="text"
+                                                    id="item<%= i %><%= j %>"
+                                                    name="item<%= i %><%= j %>"
+                                                    class="form-control mt-1 ms-3"
+                                                    placeholder="Enter Item"
+                                                    value="<%= typeof item != 'undefined' ? item : '' %>"
+                                                />
+                                            </div>
+                                            <% if (j != 1) { %>
+                                                <div class="col mt-1" align="center">
+                                                    <button type="button" class="btn btn-danger btn-md" id="itemButton<%= i %><%= j %>" onclick="deleteRow('#rowItem<%= i %><%= j %>')" ><i class="bi bi-node-minus"></i></button>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    
+                                    <% } %>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <hr>
+                                    </div>
+                                    <div class="col mt-1" align="center">
+                                        <button type="button" class="btn btn-primary btn-md" id="itemButton<%= i %>"><i class="bi bi-node-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <% if (i != 1) { %>
+                                <div class="col mt-1" align="center">
+                                    <button type="button" class="btn btn-danger btn-md" id="ingredientTypeButton<%= i %>" onclick="deleteRow('#rowIngredient<%= i %>')"><i class="bi bi-node-minus"></i></button>
+                                </div>
+                            <% } %>
+                        </div>
+                        
+                    <% } %>
+                <% } else {%>
+                    <div class="row" id="rowIngredient1">
+                        <div class="col-md-10">
+                            <input
+                                type="text"
+                                id="ingredient1"
+                                name="ingredient1"
+                                class="form-control mt-1"
+                                placeholder="Enter Ingredient"
+                                value="<%= typeof ingredient != 'undefined' ? ingredient : '' %>"
+                            />
+                            <input type="hidden" id="itemNumber1" name="itemNumber1" value="1">
+                            <div class="itemWrapper1">
+                                <div class="row" id="rowItem11">
+                                    <div class="col-md-10">
+                                        <input
+                                            type="text"
+                                            id="item11"
+                                            name="item11"
+                                            class="form-control mt-1 ms-3"
+                                            placeholder="Enter Item"
+                                            value="<%= typeof item != 'undefined' ? item : '' %>"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
                                 <div class="col-md-10">
-                                    <input
-                                        type="text"
-                                        id="item11"
-                                        name="item11"
-                                        class="form-control mt-1 ms-3"
-                                        placeholder="Enter Item"
-                                        value="<%= typeof item != 'undefined' ? item : '' %>"
-                                    />
+                                    <hr>
+                                </div>
+                                <div class="col mt-1" align="center">
+                                    <button type="button" class="btn btn-primary btn-md" id="itemButton1"><i class="bi bi-node-plus"></i></button>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-md-10">
-                                <hr>
-                            </div>
-                            <div class="col mt-1" align="center">
-                                <button type="button" class="btn btn-primary btn-md" id="itemButton1"><i class="bi bi-node-plus"></i></button>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                <% } %>
             </div>
             <div class="row">
                 <div class="col-md-10">
@@ -132,21 +191,48 @@
 
             <div class="form-group mt-2">
             <label for="name">How To Makes</label>
-            <input type="hidden" id="howToMakeNumber" name="howToMakeNumber" value="1">
+            <input type="hidden" id="howToMakeNumber" name="howToMakeNumber" value="<%= typeof food == 'undefined' ? '1' : typeof food.howToMakes == 'undefined' ? '1' : food.howToMakes.length %>">
             <div class="howToMakeWrapper">
-                <div class="row" id="rowHowToMake1">
-                    <div class="col-md-10">
-                        <input
-                            type="text"
-                            id="howToMake1"
-                            name="howToMake1"
-                            class="form-control mt-1"
-                            placeholder="Enter Step"
-                            value="<%= typeof howToMake != 'undefined' ? howToMake : '' %>"
-                        />
-    
+                
+                <% if (typeof food != 'undefined') { %>
+
+                    <% for( let i = 1; i <= food.howToMakes.length; i++ ) { %>
+                        <% let howToMake = food.howToMakes[i-1] %>
+                        <div class="row" id="rowHowToMake<%= i %>">
+                            <div class="col-md-10">
+                                <input
+                                    type="text"
+                                    id="howToMake<%= i %>"
+                                    name="howToMake<%= i %>"
+                                    class="form-control mt-1"
+                                    placeholder="Enter Step"
+                                    value="<%= howToMake %>"
+                                />
+                                
+                            </div>
+                            <% if (i != 1) { %>
+                                <div class="col mt-1" align="center">
+                                    <button type="button" class="btn btn-danger btn-md" id="howToMakeButton<%= i %>" onclick="deleteRow('#rowHowToMake<%= i %>')" ><i class="bi bi-node-minus"></i></button>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                 
+                <% } else {%>
+                    <div class="row" id="rowHowToMake1">
+                        <div class="col-md-10">
+                            <input
+                                type="text"
+                                id="howToMake1"
+                                name="howToMake1"
+                                class="form-control mt-1"
+                                placeholder="Enter Step"
+                                value="<%= typeof nutrition != 'undefined' ? nutrition : '' %>"
+                            />
+        
+                        </div>
                     </div>
-                </div>
+                <% } %>
             </div>
             <div class="row">
                 <div class="col-md-10">
@@ -160,21 +246,48 @@
 
             <div class="form-group mt-2">
             <label for="name">Nutritions</label>
-            <input type="hidden" id="nutritionNumber" name="nutritionNumber" value="1">
+            <input type="hidden" id="nutritionNumber" name="nutritionNumber" value="<%= typeof food == 'undefined' ? '1' : typeof food.nutritions == 'undefined' ? '1' : food.nutritions.length %>">
             <div class="nutritionWrapper">
-                <div class="row" id="rowNutrition1">
-                    <div class="col-md-10">
-                        <input
-                            type="text"
-                            id="nutrition1"
-                            name="nutrition1"
-                            class="form-control mt-1"
-                            placeholder="Enter Nutrition"
-                            value="<%= typeof nutrition != 'undefined' ? nutrition : '' %>"
-                        />
-    
+
+                <% if (typeof food != 'undefined') { %>
+
+                    <% for( let i = 1; i <= food.nutritions.length; i++ ) { %>
+                        <% let nutrition = food.nutritions[i-1] %>
+                        <div class="row" id="rowNutrition<%= i %>">
+                            <div class="col-md-10">
+                                <input
+                                    type="text"
+                                    id="nutrition<%= i %>"
+                                    name="nutrition<%= i %>"
+                                    class="form-control mt-1"
+                                    placeholder="Enter Nutrition"
+                                    value="<%= nutrition %>"
+                                />
+                                
+                            </div>
+                            <% if (i != 1) { %>
+                                <div class="col mt-1" align="center">
+                                    <button type="button" class="btn btn-danger btn-md" id="nutritionButton<%= i %>" onclick="deleteRow('#rowNutrition<%= i %>')" ><i class="bi bi-node-minus"></i></button>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                 
+                <% } else {%>
+                    <div class="row" id="rowNutrition1">
+                        <div class="col-md-10">
+                            <input
+                                type="text"
+                                id="nutrition1"
+                                name="nutrition1"
+                                class="form-control mt-1"
+                                placeholder="Enter Nutrition"
+                                value="<%= typeof nutrition != 'undefined' ? nutrition : '' %>"
+                            />
+        
+                        </div>
                     </div>
-                </div>
+                <% } %>
             </div>
             <div class="row">
                 <div class="col-md-10">
@@ -188,6 +301,20 @@
             
             <div class="form-group mt-2">
             <label for="name">Pictures</label>
+            
+            <% if (typeof food != 'undefined') { %>
+                <div class="row" id="">
+                    <% for( let i = 1; i <= food.picture.length; i++ ) { %>
+                        <input type="hidden" name="picture" value="<%= APP_HOST %><%= food.picture[i-1] %>">
+                        <div class="col-md-4 mt-3">
+                            <img src="<%= APP_HOST %><%= food.picture[i-1] %>" alt="" width="120px">
+                        </div>
+                    
+                    <% } %>
+                </div>
+            <% } %>
+
+
             <div class="row" id="">
                 <div class="col-md-10">
                     <input class="form-control form-control-lg" id="files" name="files" type="file" multiple>
@@ -196,7 +323,11 @@
             </div>
             
             <button type="submit" class="btn btn-primary btn-block mt-3">
-            Submit
+                <% if (typeof food != 'undefined') { %>
+                        Update
+                <% } else {%>
+                        Submit
+                <% } %>
             </button>
         </form>
         </div>
@@ -205,14 +336,12 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(function(){
-        $('#doctorID').on('change', function(){
-            var selectedValue = $(this).val();
-            console.log(selectedValue)
-            $('input:hidden').val(selectedValue);
-        }) 
 
-    })
+    function deleteRow(row){
+        var oldBtn = $(row);
+        oldBtn.remove()
+    }
+
 
     function addIngredient (label, number, button, wrapper){
         var ingredientTypeNumber = $(number).val();
@@ -324,10 +453,13 @@
     }
 
     function removeField ( row, button){
-        $(button).on('click', () => {
-            var oldBtn = $(row);
-            oldBtn.remove()
+        $(function(){
+            $(button).on('click', () => {
+                var oldBtn = $(row);
+                oldBtn.remove()
+            })
         })
+        
     }
 
     addField('Step', 'howToMake', 'howToMakeNumber', 'howToMakeButton', "howToMakeWrapper", "rowHowToMake");

@@ -25,6 +25,39 @@ const createFood = async (req, res, next) => {
         res.status(400).json({message: error.toString()})
     }
 }
+const updateFood = async (req, res, next) => {
+    try {
+        const foodId = req.params.foodId
+        const food = await Food.findOne({_id: ObjectId(foodId)})
+        if(!food) throw 'Food not found!'
+        
+        let newFood = JSON.parse(req.body.food)
+        newFood.foodCode = food.foodCode
+
+        if(req.files)
+        {
+            const base64 = await Utilities.encodeBase64(req,res,next)
+            const picture = await Utilities.uploadMultiple(req,res,next);
+    
+            newFood.picture = picture
+            newFood.base64 = base64
+
+        }
+
+
+        await Food.updateOne(
+            { _id: foodId},
+            {
+                $set: newFood
+            }
+        );
+
+        res.json(newFood)
+
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
+}
 
 const getFoods = async (req, res, next) => {
     try {
@@ -207,5 +240,6 @@ module.exports = {
     getById,
     getByCode,
     convImage,
-    createQueryBase64
+    createQueryBase64,
+    updateFood
 }

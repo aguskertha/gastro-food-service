@@ -1,7 +1,8 @@
 const router = require('express').Router()
-const { createFood, getFoods, getById, getByCode, deleteById, deleteFoods, deleteByCode, convImage, createQueryBase64 } = require('./../controllers/food.controller')
+const { createFood, getFoods, getById, getByCode, deleteById, deleteFoods, deleteByCode, convImage, createQueryBase64, updateFood } = require('./../controllers/food.controller')
 
 router.post('/', createFood)
+router.post('/:foodId/update', updateFood)
 router.get('/', getFoods)
 router.get('/code/:foodCode', getByCode)
 router.delete('/:foodId', deleteById)

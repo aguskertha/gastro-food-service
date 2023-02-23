@@ -5,7 +5,7 @@ const foodRouter = require('../routes/food.route')
 const {ensureAuthenticated} = require('../../middleware/auth');
 
 router.use('/dashboard', ensureAuthenticated, dashboardRouter);
-router.use('/foods', ensureAuthenticated, foodRouter);
+router.use('/foods', foodRouter);
 router.use('/users', userRouter);
 
 module.exports = router;
