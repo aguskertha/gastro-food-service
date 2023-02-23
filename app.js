@@ -59,6 +59,10 @@ app.use('/public',express.static(path.join(__dirname, 'public')));
 
 const router =  require('./src/routes/routes');
 
+app.get('/' , (req , res)=>{
+   res.redirect('/admin/dashboard')
+})
+
 app.use('/', router);
 
 module.exports = app;

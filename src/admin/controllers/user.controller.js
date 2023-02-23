@@ -159,7 +159,7 @@ const resetPassword = async (req, res, next) => {
 
         if(errors.length > 0 ){
             res.render('User/reset-password', {
-                layout: 'layouts/main-layout-no-nav',
+                layout: 'layouts/main-layout',
                 errors,
                 password,
                 newPassword,
@@ -171,7 +171,7 @@ const resetPassword = async (req, res, next) => {
             if (!validPassword) {
                 errors.push({message: 'Invalid Password!'});
                 res.render('User/reset-password', {
-                    layout: 'layouts/main-layout-no-nav',
+                    layout: 'layouts/main-layout',
                     errors,
                     password,
                     newPassword,
