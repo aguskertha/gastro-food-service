@@ -82,9 +82,26 @@ const encodeBase64 = async (req, res, next) => {
     }
 }
 
+const encodeSingleBase64 = async (req, res, next) => {
+    try {
+        if(req.files.files){
+            file = req.files.files
+            const buffer = file.data
+            return Base64.encode(buffer)
+        }
+        else
+        {
+            throw "File not found!"
+        }
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
+}
+
 
 module.exports = {
     upload,
     encodeBase64,
-    uploadMultiple
+    uploadMultiple,
+    encodeSingleBase64
 }

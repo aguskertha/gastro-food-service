@@ -1,0 +1,28 @@
+
+<div class="container-fluid bg-white shadow-sm bg-body rounded py-3 m-3">
+    <div class="forms-container"   >
+        <h1 align="center" class="text mt-3">Upload Model Siamese</h1>
+        <br>
+        <hr>
+        <div align="center">
+            <% include ./../partials/messages %> 
+            <form action="/admin/model-siamese/upload" method="post" enctype="multipart/form-data" class="sign-in-form">
+                
+                <div class="row" id="">
+                    <div class="col-md-10">
+                        <input class="form-control form-control-lg" id="files" name="files" type="file" multiple>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg my-5">Upload</button>
+          
+            </form>
+        </div>
+    </div>
+  </div>
+  <script>
+  </script>
+      
+      
+
+
