@@ -61,7 +61,7 @@ const updateFood = async (req, res, next) => {
 
 const getFoods = async (req, res, next) => {
     try {
-        const foods = await Food.find().sort({createdAt : -1});
+        const foods = await Food.find({}, {base64:0}).sort({createdAt : -1});
         res.json(foods)
     } catch (error) {
         res.status(400).json({message: error.toString()})
@@ -104,8 +104,37 @@ const deleteByCode = async (req, res, next) => {
 const getById = async (req, res, next) => {
     try {
         const foodId = req.params.foodId;
-        const food = await Food.findOne({_id: ObjectId(foodId)})
+        let food = await Food.findOne({_id: ObjectId(foodId)}, {base64:0})
         if(!food) throw 'Food not found!'
+        
+        if(req.query != null)
+        {
+            var data = req.query.detail;
+            if( data == 1)
+            {
+                food = await Food.findOne({_id: ObjectId(foodId)}, {
+                    picture:1,
+                    name: 1,
+                    description: 1,
+                    history: 1,
+                    culture: 1,
+                })
+            }
+            else if(data == 2)
+            {
+                food = await Food.findOne({_id: ObjectId(foodId)}, {
+                    ingredients: 1,
+                    howToMakes: 1,
+                    link: 1
+                })
+            }
+            else if(data == 3)
+            {
+                food = await Food.findOne({_id: ObjectId(foodId)}, {
+                    nutritions:1,
+                })
+            }
+        }
         res.json(food)
     } catch (error) {
         res.status(400).json({message: error.toString()})
@@ -180,19 +209,17 @@ const createQueryBase64 = async (req, res, next) => {
         })
         
         const data = datas[0]
-        if(data.predict < 0.70)
+        if(data.predict < 0.85)
         {
             throw "Food not found!"
         }
         let food = await Food.findOne({foodCode: data.label})
-        food.base64 = data.predict.toString()
         let newfood = {
-            picture: food.picture[0],
-            base64: data.predict.toString(),
             _id: food._id,
             name: food.name,
             description: food.description,
-            foodCode: food.foodCode
+            foodCode: food.foodCode,
+            picture: food.picture
         }
         res.json(newfood)
     } catch (error) {
