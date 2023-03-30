@@ -70,7 +70,7 @@ const getFoods = async (req, res, next) => {
 
 const getBase64Foods = async (req, res, next) => {
     try {
-        const foods = await Food.find({}, {base64:0}).sort({createdAt : -1});
+        const foods = await Food.find({}, {base64:1, foodCode:1}).sort({createdAt : -1});
         res.json(foods)
     } catch (error) {
         res.status(400).json({message: error.toString()})
