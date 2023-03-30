@@ -182,24 +182,23 @@ const convImage = async (req, res, next) => {
 const createQueryBase64 = async (req, res, next) => {
     try {
         const {base64} = req.body
-        let images = []
-        let labels = []
-        const foods = await Food.find()
-        await Promise.all(foods.map(async (food) => {
-            food.base64.forEach(base64 => {
-                images.push(base64)
-                labels.push(food.foodCode)
-            });
-        }));
-        result = await axios.post('/multi-predict', {
+        // let images = []
+        // let labels = []
+        // const foods = await Food.find()
+        // await Promise.all(foods.map(async (food) => {
+        //     food.base64.forEach(base64 => {
+        //         images.push(base64)
+        //         labels.push(food.foodCode)
+        //     });
+        // }));
+        result = await axios.post('/predict-data', {
             method: 'POST',
-            query: base64,
-            images
+            query: base64
         });
 
         let predicts = result.data
-        let datas = getNewObject(predicts, labels, images.length)
-
+        
+        // let datas = getNewObject(predicts, labels, images.length)
         // const groupedDatas = datas.reduce(groupAndCollectByCode, {});
 
         // let newObjs = []
@@ -213,16 +212,18 @@ const createQueryBase64 = async (req, res, next) => {
         //     newObjs.push(data)
         // }
         
-        datas.sort((a,b) => {
+        predicts.sort((a,b) => {
             return b.predict - a.predict
         })
+
+        console.log(predicts)
         
-        const data = datas[0]
+        const data = predicts[0]
         if(data.predict < 0.85)
         {
             throw "Food not found!"
         }
-        let food = await Food.findOne({foodCode: data.label})
+        let food = await Food.findOne({foodCode: data.label.foodCode})
         let newfood = {
             _id: food._id,
             name: food.name,
