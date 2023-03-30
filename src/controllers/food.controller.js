@@ -68,6 +68,15 @@ const getFoods = async (req, res, next) => {
     }
 }
 
+const getBase64Foods = async (req, res, next) => {
+    try {
+        const foods = await Food.find({}, {base64:0}).sort({createdAt : -1});
+        res.json(foods)
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
+}
+
 const deleteFoods = async (req, res, next) => {
     try {
         await Food.deleteMany()
@@ -182,19 +191,10 @@ const createQueryBase64 = async (req, res, next) => {
                 labels.push(food.foodCode)
             });
         }));
-        // result = await axios.post('/multi-predict', {
-        //     method: 'POST',
-        //     query: base64,
-        //     images
-        // });
-        result = await axios({
-            url: '/multi-predict',
-            method: 'post',
-            maxContentLength: 1000000,
-            data: {
-                query: base64,
-                images
-            }
+        result = await axios.post('/multi-predict', {
+            method: 'POST',
+            query: base64,
+            images
         });
 
         let predicts = result.data
@@ -270,6 +270,7 @@ const groupAndCollectByCode = (index, item) =>{
 module.exports = {
     createFood,
     getFoods,
+    getBase64Foods,
     deleteFoods,
     deleteByCode,
     deleteById,
