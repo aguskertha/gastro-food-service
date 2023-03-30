@@ -182,16 +182,12 @@ const createQueryBase64 = async (req, res, next) => {
                 labels.push(food.foodCode)
             });
         }));
-        result = await axios.post(
-            '/multi-predict', 
-            {
-                method: 'POST',
-                query: base64,
-                images,
-                maxContentLength: Infinity,
-                maxBodyLength: Infinity
-            },
-        );
+        result = await axios.post('/multi-predict', {
+            method: 'POST',
+            query: base64,
+            images
+        });
+
         let predicts = result.data
         let datas = getNewObject(predicts, labels, images.length)
 
