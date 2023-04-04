@@ -70,7 +70,7 @@ const getFoods = async (req, res, next) => {
 
 const getBase64Foods = async (req, res, next) => {
     try {
-        const foods = await Food.find({}, {picture:1, foodCode:1, name: 1}).sort({createdAt : -1});
+        const foods = await Food.find({}, {picture:1, foodCode:1, name: 1, _id: 1}).sort({createdAt : -1});
         res.json(foods)
     } catch (error) {
         res.status(400).json({message: error.toString()})
@@ -223,7 +223,11 @@ const createQueryBase64 = async (req, res, next) => {
         {
             throw "Food not found!"
         }
-        let food = await Food.findOne({foodCode: data.label.foodCode})
+        let food = await Food.findById(ObjectId(data.label._id))
+        if(!food)
+        {
+            throw "Food not found!"
+        }
         let newfood = {
             _id: food._id,
             name: food.name,
