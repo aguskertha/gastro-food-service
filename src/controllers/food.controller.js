@@ -266,7 +266,7 @@ const getByMultipleIds = async (req, res, next) => {
         
         if(foodIds.length <= 0) throw new "Food Ids not found!"
         
-        let foods = await Food.find({"_id": {"$in": foodIds.map((item) => ObjectId(item)) }})
+        let foods = await Food.find({"_id": {"$in": foodIds.map((item) => ObjectId(item)) }}, {picture:1, foodCode:1, name: 1, _id: 1})
         if(foods.length <= 0) throw new "Foods not found!"
 
         res.json(foods)
