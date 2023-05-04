@@ -216,8 +216,13 @@ const createQueryBase64 = async (req, res, next) => {
             return b.predict - a.predict
         })
 
-        console.log(predicts)
-        
+        let similars = []
+        predicts.forEach((data, index) => {
+            if(index >= 1 && index <= 3){
+                similars.push(data.label._id)
+            }
+        });
+
         const data = predicts[0]
         if(data.predict < 0.85)
         {
@@ -228,12 +233,14 @@ const createQueryBase64 = async (req, res, next) => {
         {
             throw "Food not found!"
         }
+
         let newfood = {
             _id: food._id,
             name: food.name,
             description: food.description,
             foodCode: food.foodCode,
-            picture: food.picture
+            picture: food.picture,
+            base64: similars
         }
         res.json(newfood)
     } catch (error) {
@@ -251,6 +258,22 @@ const getNewObject = (predicts, labels, len) => {
         datas.push(data)
     }
     return datas
+}
+
+const getByMultipleIds = async (req, res, next) => {
+    try {
+        const foodIds = req.body.foodIds;
+        
+        if(foodIds.length <= 0) throw new "Food Ids not found!"
+        
+        let foods = await Food.find({"_id": {"$in": foodIds.map((item) => ObjectId(item)) }})
+        if(foods.length <= 0) throw new "Foods not found!"
+
+        res.json(foods)
+        
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
 }
 
 const getAverage = (datas) => {
@@ -283,5 +306,6 @@ module.exports = {
     getByCode,
     convImage,
     createQueryBase64,
-    updateFood
+    updateFood,
+    getByMultipleIds
 }
