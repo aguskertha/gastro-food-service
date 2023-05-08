@@ -316,36 +316,44 @@ const groupAndCollectByCode = (index, item) =>{
 const getDashboard = async (req, res, next) =>{
     try {
         
-        let names = []
-        let amounts = []
+        let predicts = []
         const foods = await Food.find({}, {_id: 1, name: 1}).sort({createdAt : -1});
         const logs = await Log.find().sort({createdAt : -1});
         for (let i = 0; i < foods.length; i++) {
             const food = foods[i];
-            names.push(food.name)
+            
             let count = 0
             for (let j = 0; j < logs.length; j++) {
                 const log = logs[j];
-                console.log(log.foodId +" <> "+food._id)
                 if(log.foodId == food._id)
                 {
-                    amounts.push(log.amount)
+                    predicts.push({name: food.name, amount: log.amount})
                     break
                 }
                 count++
             }
             if(count == logs.length)
             {
-                amounts.push(0)
+                predicts.push({name: food.name, amount: 0})
             }
+        }
+
+        predicts.sort((a,b) => {
+            return b.amount - a.amount
+        })
+
+        let names = []
+        let amounts = []
+        for (let index = 0; index < predicts.length; index++) {
+            const predict = predicts[index];
+            names.push(predict.name)
+            amounts.push(predict.amount)
         }
         
         let datas = {
             names : names,
             amounts : amounts
         }
-
-        console.log(datas)
 
         res.json(datas)
     } catch (error) {
