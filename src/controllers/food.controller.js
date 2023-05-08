@@ -1,4 +1,5 @@
 const Food = require('./../models/food.model')
+const Log = require('./../models/log.model')
 const Utilities = require('./../utils/utilities')
 const Storage = require('./../utils/storage-constant')
 const ObjectId = require('mongodb').ObjectId;
@@ -234,6 +235,23 @@ const createQueryBase64 = async (req, res, next) => {
             throw "Food not found!"
         }
 
+        let log = await Log.findOne({foodId: ObjectId(food._id)})
+        if(log == null)
+        {
+            const newLog = new Log({foodId: food._id, name: food.name, amount: 1})
+            await newLog.save()
+        }
+        else
+        {
+            log.amount+=1
+            await Log.updateOne(
+                { _id: log._id},
+                {
+                    $set: log
+                }
+            );
+        }
+
         let newfood = {
             _id: food._id,
             name: food.name,
@@ -295,6 +313,46 @@ const groupAndCollectByCode = (index, item) =>{
     return index;
 }
 
+const getDashboard = async (req, res, next) =>{
+    try {
+        
+        let names = []
+        let amounts = []
+        const foods = await Food.find({}, {_id: 1, name: 1}).sort({createdAt : -1});
+        const logs = await Log.find().sort({createdAt : -1});
+        for (let i = 0; i < foods.length; i++) {
+            const food = foods[i];
+            names.push(food.name)
+            let count = 0
+            for (let j = 0; j < logs.length; j++) {
+                const log = logs[j];
+                console.log(log.foodId +" <> "+food._id)
+                if(log.foodId == food._id)
+                {
+                    amounts.push(log.amount)
+                    break
+                }
+                count++
+            }
+            if(count == logs.length)
+            {
+                amounts.push(0)
+            }
+        }
+        
+        let datas = {
+            names : names,
+            amounts : amounts
+        }
+
+        console.log(datas)
+
+        res.json(datas)
+    } catch (error) {
+        res.status(400).json({message: error.toString()})
+    }
+}
+
 module.exports = {
     createFood,
     getFoods,
@@ -307,5 +365,6 @@ module.exports = {
     convImage,
     createQueryBase64,
     updateFood,
-    getByMultipleIds
+    getByMultipleIds,
+    getDashboard
 }
